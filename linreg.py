@@ -134,13 +134,15 @@ def compute_cost(X: np.array, y: np.array, theta: np.array):
 
     :return: cost value for the provided theta.
     """
-    m = y.size
+    # number of training examples
+    m = y.shape[0]
+
+    # You need to return the following variable correctly
+    J = 0
 
     # ====================== YOUR CODE HERE ======================
     # Instructions: Compute the cost of a particular choice of theta
     #               You should set J to the cost.
-    h = hypothesis(X, theta)
-    J = (1 / (2 * m)) * np.sum(np.square(h - y))
 
     # ==============================================================
 
@@ -186,13 +188,10 @@ def gradient_descent(X: np.array,
         #       of the cost function (compute_cost) and gradient here.
         #
 
-        h = hypothesis(X, theta)
-        theta -= (alpha / m) * np.dot(h - y, X)
-
         # ============================================================
 
         # Save the cost J in every iteration
-        j_history[iter] = compute_cost(X, y, theta)
+        j_history[iter] = (compute_cost(X, y, theta))
 
     return theta, j_history
 
@@ -231,13 +230,9 @@ def feature_normalize(X: np.array,
     # Hint: You might find the 'np.mean' and 'np.std' functions useful.
     #
 
-    if mu is None:
-        mu = np.mean(X, axis=0)
-
-    if sigma is None:
-        sigma = np.std(X, axis=0)
-
-    x_norm = (X - mu) / sigma
+    x_norm = X.copy()
+    mu = np.zeros(X.shape[1])
+    sigma = np.zeros(X.shape[1])
 
     # ============================================================
 
@@ -260,7 +255,16 @@ def compute_cost_multi(X: np.array, y: np.array, theta: np.array):
 
     :return: cost value for the provided theta.
     """
-    return compute_cost(X, y, theta)
+    # number of training examples
+    m = y.shape[0]
+
+    # You need to return the following variable correctly
+    J = 0
+
+    # ======================= YOUR CODE HERE ===========================
+
+    # ==================================================================
+    return J
 
 
 def gradient_descent_multi(X: np.array,
@@ -286,11 +290,23 @@ def gradient_descent_multi(X: np.array,
         theta : array_like
         The learned linear regression parameters. A vector of shape (n+1, ).
 
-        J_history : list
+        j_history : list
         List for the values of the cost function after each iteration.
     """
 
-    return gradient_descent(X, y, theta, alpha, num_iters)
+    # Initialize some useful values
+    m = y.size  # number of training examples
+    j_history = np.zeros(num_iters)
+
+    for iter in range(num_iters):
+        # ====================== YOUR CODE HERE ======================
+
+        # ============================================================
+
+        # Save the cost J in every iteration
+        j_history[iter] = (compute_cost(X, y, theta))
+
+    return theta, j_history
 
 
 def normal_eqn(X: np.array, y: np.array):
@@ -315,8 +331,6 @@ def normal_eqn(X: np.array, y: np.array):
     # Instructions: Complete the code to compute the closed form solution
     #               to linear regression and put the result in theta.
     #
-
-    theta = np.dot(np.dot(np.linalg.inv(np.dot(X.T, X)), X.T), y)
 
     # ============================================================
 
