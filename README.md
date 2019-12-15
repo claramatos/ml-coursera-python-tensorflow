@@ -4,7 +4,7 @@ This repository contains the python versions of the Machine Learning Coursera MO
 
 The starter code is available [here](https://github.com/claramatos/ml-coursera-python-tensorflow).
 
-The solutions are provided in [`numpy`](https://github.com/claramatos/ml-coursera-python-tensorflow) and [`tensorflow`](https://github.com/claramatos/ml-coursera-python-tensorflow).
+The solutions are provided in [`numpy`](https://github.com/claramatos/ml-coursera-python-tensorflow/tree/solutions-numpy) and [`tensorflow`](https://github.com/claramatos/ml-coursera-python-tensorflow/tree/solutions-tensorflow).
 
 Each assignment is composed by a jupyter notebook and a python file.
 The functions should be implemented on the python file.
