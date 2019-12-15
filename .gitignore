@@ -1,0 +1,16 @@
+build/
+dist/
+venv/
+*.egg-info/
+*.egg
+*.py[cod]
+__pycache__/
+*.so
+*.idea
+
+# due to using tox and pytest
+.tox
+.cache
+
+# jupyter notebooks
+.ipynb_checkpoints/
