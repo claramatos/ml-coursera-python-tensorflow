@@ -14,3 +14,4 @@ __pycache__/
 
 # jupyter notebooks
 .ipynb_checkpoints/
+token.pkl
