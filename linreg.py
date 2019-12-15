@@ -55,17 +55,17 @@ class LinRegGrader(Submission):
 
 def warm_up():
     """
-    An example function that returns the 5x5 identity matrix.
+    Example function in Python which computes the identity matrix.
 
-    :return: 5x5 identity matrix
+    Returns
+    -------
+    A : array_like
+        The 5x5 identity matrix.
+
+    Instructions
+    ------------
+    Return the 5x5 identity matrix.
     """
-
-    # ============= YOUR CODE HERE ==============
-    # Instructions: Return the 5x5 identity matrix
-    #               In octave, we return values by defining which variables
-    #               represent the return values (at the top of the file)
-    #               and then set them accordingly.
-
     return np.eye(5)
 
 
@@ -74,74 +74,97 @@ def plot_data(X: np.array,
               x_label: typing.Optional[str] = '',
               y_label: typing.Optional[str] = ''):
     """
-    Plots the data points x and y into a new figure.
+    Plots the data points x and y into a new figure. Plots the data
+    points and gives the figure axes labels of population and profit.
 
-    :param x: array_like
-        The horizontal coordinates of the data points.
-    :param y: array_like
-        The vertical coordinates of the data points.
-    :param x_label:  string, optional
-        The label for the horizontal axis.
-    :param y_label:  string, optional
-        The label for the vertical axis.
-    :return:
+    Parameters
+    ----------
+    x : array_like
+        Data point values for x-axis.
+
+    y : array_like
+        Data point values for y-axis. Note x and y should have the same size.
+
+    Instructions
+    ------------
+    Plot the training data into a figure using the "figure" and "plot"
+    functions. Set the axes labels using the "xlabel" and "ylabel" functions.
+    Assume the population and revenue data have been passed in as the x
+    and y arguments of this function.
+
+    Hint
+    ----
+    You can use the 'ro' option with plot to have the markers
+    appear as red circles. Furthermore, you can make the markers larger by
+    using plot(..., 'ro', ms=10), where `ms` refers to marker size. You
+    can also set the marker edge color using the `mec` property.
     """
+    plt.figure()  # open a new figure
 
-    # ====================== YOUR CODE HERE ======================
-    # Instructions: Plot the training data into a figure using the
-    #               "figure" and "plot" commands. Set the axes labels using
-    #               the "xlabel" and "ylabel" commands. Assume the
-    #               population and revenue data have been passed in
-    #               as the x and y arguments of this function.
-    #
-    # Hint: You can use the 'rx' option with plot to have the markers
-    #       appear as red crosses. Furthermore, you can make the
-    #       markers larger by using plt.plot(..., 'rx', markersize=10)
-
-    plt.figure()
+    # ====================== YOUR CODE HERE =======================
     plt.plot(X, y, 'rx', markersize=10)
     plt.xlabel(x_label)
     plt.ylabel(y_label)
+    # =============================================================
 
 
 def hypothesis(X: np.array, theta: np.array):
     """
     Hypothesis function for linear regression.
 
-    :param x: array_like
+    Parameters
+    ----------
+    x: array_like
         Feature vector of shape (m, n+1), where m is the number of training
         examples and n is the number of features.
-    :param theta: array_like
+    theta: array_like
         Weight vector.
 
-    :return: Hypothesis function value for linear regression
+    Returns
+    -------
+    Hypothesis function value for linear regression
     """
+
     return np.dot(X, theta)
 
 
 def compute_cost(X: np.array, y: np.array, theta: np.array):
     """
-    Computes the cost of using theta as the parameter for
-    linear regression to fit the data points in x and y.
+    Compute cost for linear regression. Computes the cost of using theta as the
+    parameter for linear regression to fit the data points in X and y.
 
-    :param x: array_like
-        Feature vector of shape (m, n+1), where m is the number of training
-        examples and n is the number of features.
-    :param y: array_like
-        Target vector of shape (m, ).
-    :param theta: array_like
-        Weight vector of shape (n+1, ).
+    Parameters
+    ----------
+    X : array_like
+        The input dataset of shape (m x n+1), where m is the number of examples,
+        and n is the number of features. We assume a vector of one's already
+        appended to the features so we have n+1 columns.
 
-    :return: cost value for the provided theta.
+    y : array_like
+        The values of the function at each data point. This is a vector of
+        shape (m, ).
+
+    theta : array_like
+        The parameters for the regression function. This is a vector of
+        shape (n+1, ).
+
+    Returns
+    -------
+    J : float
+        The value of the regression cost function.
+
+    Instructions
+    ------------
+    Compute the cost of a particular choice of theta.
+    You should set J to the cost.
     """
-    m = y.size
+
+    # number of training examples
+    m = y.shape[0]
 
     # ====================== YOUR CODE HERE ======================
-    # Instructions: Compute the cost of a particular choice of theta
-    #               You should set J to the cost.
     h = hypothesis(X, theta)
     J = (1 / (2 * m)) * np.sum(np.square(h - y))
-
     # ==============================================================
 
     return J
@@ -153,46 +176,55 @@ def gradient_descent(X: np.array,
                      alpha: float,
                      num_iters: int):
     """
+    Performs gradient descent to learn `theta`. Updates theta by taking `num_iters`
+    gradient steps with learning rate `alpha`.
 
-    :param x: array_like
-        Feature vector of shape (m, n+1), where m is the number of training
-        examples and n is the number of features.
-    :param y: array_like
-        Target vector of shape (m, ).
-    :param theta: array_like
-        Weight vector of shape (n+1, ).
-    :param alpha: scalar
-        Learning rate.
-    :param num_iters: scalar.
-        Number of iterations.
+    Parameters
+    ----------
+    X : array_like
+        The input dataset of shape (m x n+1).
 
-    :return:
-        theta : array_like
+    y : arra_like
+        Value at given features. A vector of shape (m, ).
+
+    theta : array_like
+        Initial values for the linear regression parameters.
+        A vector of shape (n+1, ).
+
+    alpha : float
+        The learning rate.
+
+    num_iters : int
+        The number of iterations for gradient descent.
+
+    Returns
+    -------
+    theta : array_like
         The learned linear regression parameters. A vector of shape (n+1, ).
 
-        j_history : list
-        List for the values of the cost function after each iteration.
+    j_history : list
+        A python list for the values of the cost function after each iteration.
+
+    Instructions
+    ------------
+    Perform a single gradient step on the parameter vector theta.
+
+    While debugging, it can be useful to print out the values of
+    the cost function (computeCost) and gradient here.
     """
-    # Initialize some useful values
-    m = y.size  # number of training examples
+    # number of training examples
+    m = y.size
+
     j_history = np.zeros(num_iters)
 
     for iter in range(num_iters):
         # ====================== YOUR CODE HERE ======================
-        # Instructions: Perform a single gradient step on the parameter vector
-        #               theta.
-        #
-        # Hint: While debugging, it can be useful to print out the values
-        #       of the cost function (compute_cost) and gradient here.
-        #
-
         h = hypothesis(X, theta)
         theta -= (alpha / m) * np.dot(h - y, X)
-
         # ============================================================
 
         # Save the cost J in every iteration
-        j_history[iter] = compute_cost(X, y, theta)
+        j_history[iter] = (compute_cost(X, y, theta))
 
     return theta, j_history
 
@@ -201,36 +233,37 @@ def feature_normalize(X: np.array,
                       mu: np.array = None,
                       sigma: np.array = None):
     """
-    Normalizes the features in x.
+    Normalizes the features in X. returns a normalized version of X where
+    the mean value of each feature is 0 and the standard deviation
+    is 1. This is often a good preprocessing step to do when working with
+    learning algorithms.
 
-    :param x: array_like
-        Feature vector.
-    :param mu: scalar, optional
-        Mean values of the feature vector.
-    :param sigma:
-        Standard deviation values of the feature vector.
+    Parameters
+    ----------
+    X : array_like
+        The dataset of shape (m x n).
 
-    :return: returns a normalized version of X where the mean
-    value of each feature is 0 and the standard deviation is 1.
-    This is often a good preprocessing step to do when
-    working with learning algorithms.
+    Returns
+    -------
+    X_norm : array_like
+        The normalized dataset of shape (m x n).
+
+    Instructions
+    ------------
+    First, for each feature dimension, compute the mean of the feature
+    and subtract it from the dataset, storing the mean value in mu.
+    Next, compute the  standard deviation of each feature and divide
+    each feature by it's standard deviation, storing the standard deviation
+    in sigma.
+
+    Note that X is a matrix where each column is a feature and each row is
+    an example. You needto perform the normalization separately for each feature.
+
+    Hint
+    ----
+    You might find the 'np.mean' and 'np.std' functions useful.
     """
     # ====================== YOUR CODE HERE ======================
-    # Instructions: First, for each feature dimension, compute the mean
-    #               of the feature and subtract it from the dataset,
-    #               storing the mean value in mu. Next, compute the
-    #               standard deviation of each feature and divide
-    #               each feature by it's standard deviation, storing
-    #               the standard deviation in sigma.
-    #
-    #               Note that X is a matrix where each column is a
-    #               feature and each row is an example. You need
-    #               to perform the normalization separately for
-    #               each feature.
-    #
-    # Hint: You might find the 'np.mean' and 'np.std' functions useful.
-    #
-
     if mu is None:
         mu = np.mean(X, axis=0)
 
@@ -238,7 +271,6 @@ def feature_normalize(X: np.array,
         sigma = np.std(X, axis=0)
 
     x_norm = (X - mu) / sigma
-
     # ============================================================
 
     return x_norm, mu, sigma
@@ -250,15 +282,25 @@ def compute_cost_multi(X: np.array, y: np.array, theta: np.array):
     Computes the cost of using theta as the parameter for linear
     regression to fit the data points in X and y.
 
-    :param x: array_like
-        Feature vector of shape (m, n+1), where m is the number of training
-        examples and n is the number of features.
-    :param y: array_like
-        Target vector.
-    :param theta: array_like
-        Weight vector.
+    Parameters
+    ----------
+    X : array_like
+        The dataset of shape (m x n+1).
 
-    :return: cost value for the provided theta.
+    y : array_like
+        A vector of shape (m, ) for the values at a given data point.
+
+    theta : array_like
+        The linear regression parameters. A vector of shape (n+1, )
+
+    Returns
+    -------
+    J : float
+        The value of the cost function.
+
+    Instructions
+    ------------
+    Compute the cost of a particular choice of theta. You should set J to the cost.
     """
     return compute_cost(X, y, theta)
 
@@ -269,55 +311,73 @@ def gradient_descent_multi(X: np.array,
                            alpha: float,
                            num_iters: int):
     """
+    Performs gradient descent to learn theta.
+    Updates theta by taking num_iters gradient steps with learning rate alpha.
 
-    :param x: array_like
-        Feature vector of shape (m, n+1), where m is the number of training
-        examples and n is the number of features.
-    :param y: array_like
-        Target vector of shape (m, ).
-    :param theta: array_like
-        Weight vector of shape (n+1, ).
-    :param alpha: scalar
-        Learning rate.
-    :param num_iters: scalar.
-        Number of iterations.
+    Parameters
+    ----------
+    X : array_like
+        The dataset of shape (m x n+1).
 
-    :return:
-        theta : array_like
+    y : array_like
+        A vector of shape (m, ) for the values at a given data point.
+
+    theta : array_like
+        The linear regression parameters. A vector of shape (n+1, )
+
+    alpha : float
+        The learning rate for gradient descent.
+
+    num_iters : int
+        The number of iterations to run gradient descent.
+
+    Returns
+    -------
+    theta : array_like
         The learned linear regression parameters. A vector of shape (n+1, ).
 
-        J_history : list
-        List for the values of the cost function after each iteration.
-    """
+    J_history : list
+        A python list for the values of the cost function after each iteration.
 
+    Instructions
+    ------------
+    Peform a single gradient step on the parameter vector theta.
+
+    While debugging, it can be useful to print out the values of
+    the cost function (computeCost) and gradient here.
+    """
     return gradient_descent(X, y, theta, alpha, num_iters)
 
 
 def normal_eqn(X: np.array, y: np.array):
     """
-    Computes the closed - form solution to linear regression
-    using the normal equations.
+    Computes the closed-form solution to linear regression using the normal equations.
 
-    :param x: array_like
-        Feature vector of shape (m, n+1), where m is the number of training
-        examples and n is the number of features.
-    :param y: array_like
-        Target vector of shape (m, ).
+    Parameters
+    ----------
+    X : array_like
+        The dataset of shape (m x n+1).
 
-    :return:
-        theta : array_like
-        The learned linear regression parameters. A vector of shape (n+1, ).
+    y : array_like
+        The value at each data point. A vector of shape (m, ).
+
+    Returns
+    -------
+    theta : array_like
+        Estimated linear regression parameters. A vector of shape (n+1, ).
+
+    Instructions
+    ------------
+    Complete the code to compute the closed form solution to linear
+    regression and put the result in theta.
+
+    Hint
+    ----
+    Look up the function `np.linalg.pinv` for computing matrix inverse.
     """
 
-    theta = np.zeros(X.shape[1])
-
     # ====================== YOUR CODE HERE ======================
-    # Instructions: Complete the code to compute the closed form solution
-    #               to linear regression and put the result in theta.
-    #
-
     theta = np.dot(np.dot(np.linalg.inv(np.dot(X.T, X)), X.T), y)
-
     # ============================================================
 
     return theta
