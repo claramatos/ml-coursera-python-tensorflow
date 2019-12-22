@@ -1,6 +1,7 @@
 import typing
 import numpy as np
 import matplotlib.pyplot as plt
+import tensorflow as tf
 
 from submission import Submission
 
@@ -67,10 +68,10 @@ def warm_up():
     Return the 5x5 identity matrix.
     """
     # ======== YOUR CODE HERE ======
-    A = []  # modify this line
+    A = tf.eye(5)
 
     # ==============================
-    return A
+    return A.numpy()
 
 
 def plot_data(X: np.array,
@@ -106,7 +107,9 @@ def plot_data(X: np.array,
     fig = plt.figure()  # open a new figure
 
     # ====================== YOUR CODE HERE =======================
-
+    plt.plot(X, y, 'rx', markersize=10)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
     # =============================================================
 
 
@@ -127,7 +130,7 @@ def hypothesis(X: np.array, theta: np.array):
     Hypothesis function value for linear regression
     """
 
-    return np.dot(X, theta)
+    return tf.tensordot(X, theta, axes=1)
 
 
 def compute_cost(X: np.array, y: np.array, theta: np.array):
@@ -168,7 +171,14 @@ def compute_cost(X: np.array, y: np.array, theta: np.array):
     J = 0
 
     # ====================== YOUR CODE HERE ======================
+    X = tf.constant(X, dtype=tf.float64, name='X')
+    y = tf.constant(y, dtype=tf.float64, name='y')
 
+    theta = tf.Variable(theta, dtype=tf.float64, name='weights')
+
+    h = hypothesis(X, theta)
+
+    J = (1 / 2) * tf.reduce_mean(tf.square(y - h, name='loss'))
     # ==============================================================
 
     return J
@@ -217,19 +227,31 @@ def gradient_descent(X: np.array,
     the cost function (computeCost) and gradient here.
     """
     # number of training examples
-    m = y.size
-
+    m = y.size  # number of training examples
     j_history = np.zeros(num_iters)
+
+    X = tf.constant(X, dtype=tf.float64, name='X')
+    y = tf.constant(y, dtype=tf.float64, name='y')
+
+    theta = tf.Variable(theta, dtype=tf.float64, name='weights')
 
     for iter in range(num_iters):
         # ====================== YOUR CODE HERE ======================
+        # Instructions: Perform a single gradient step on the parameter vector
+        #               theta.
+        #
+        # Hint: While debugging, it can be useful to print out the values
+        #       of the cost function (compute_cost) and gradient here.
+        #
+        h = hypothesis(X, theta)
+        theta = theta - (alpha / m) * tf.tensordot(h - y, X, axes=1)
 
         # ============================================================
 
         # Save the cost J in every iteration
-        j_history[iter] = (compute_cost(X, y, theta))
+        j_history[iter] = compute_cost(X, y, theta)
 
-    return theta, j_history
+    return theta.numpy(), j_history
 
 
 def feature_normalize(X: np.array,
@@ -260,18 +282,21 @@ def feature_normalize(X: np.array,
     in sigma.
 
     Note that X is a matrix where each column is a feature and each row is
-    an example. You needto perform the normalization separately for each feature.
+    an example. You need to perform the normalization separately for each feature.
 
     Hint
     ----
     You might find the 'np.mean' and 'np.std' functions useful.
     """
-    x_norm = X.copy()
-    mu = np.zeros(X.shape[1])
-    sigma = np.zeros(X.shape[1])
 
     # ====================== YOUR CODE HERE ======================
+    if mu is None:
+        mu = np.mean(X, axis=0)
 
+    if sigma is None:
+        sigma = np.std(X, axis=0)
+
+    x_norm = (X - mu) / sigma
     # ============================================================
 
     return x_norm, mu, sigma
@@ -303,16 +328,7 @@ def compute_cost_multi(X: np.array, y: np.array, theta: np.array):
     ------------
     Compute the cost of a particular choice of theta. You should set J to the cost.
     """
-    # number of training examples
-    m = y.shape[0]
-
-    # You need to return the following variable correctly
-    J = 0
-
-    # ======================= YOUR CODE HERE ===========================
-
-    # ==================================================================
-    return J
+    return compute_cost(X, y, theta)
 
 
 def gradient_descent_multi(X: np.array,
@@ -357,19 +373,7 @@ def gradient_descent_multi(X: np.array,
     the cost function (computeCost) and gradient here.
     """
 
-    # Initialize some useful values
-    m = y.size  # number of training examples
-    j_history = np.zeros(num_iters)
-
-    for iter in range(num_iters):
-        # ====================== YOUR CODE HERE ======================
-
-        # ============================================================
-
-        # Save the cost J in every iteration
-        j_history[iter] = (compute_cost(X, y, theta))
-
-    return theta, j_history
+    return gradient_descent(X, y, theta, alpha, num_iters)
 
 
 def normal_eqn(X: np.array, y: np.array):
@@ -398,14 +402,20 @@ def normal_eqn(X: np.array, y: np.array):
     ----
     Look up the function `np.linalg.pinv` for computing matrix inverse.
     """
-
-    theta = np.zeros(X.shape[1])
-
     # ====================== YOUR CODE HERE ======================
+    # Instructions: Complete the code to compute the closed form solution
+    #               to linear regression and put the result in theta.
+    #
+
+    X = tf.constant(X, dtype=tf.float64, name="X")
+    y = tf.constant(y, dtype=tf.float64, name="y", shape=[y.shape[0], 1])
+    XT = tf.transpose(X)
+
+    theta = tf.matmul(tf.matmul(tf.linalg.inv(tf.matmul(XT, X)), XT), y)
+    theta = tf.reshape(theta, [theta.shape[1], theta.shape[0]])
 
     # ============================================================
-
-    return theta
+    return theta.numpy()[0]
 
 
 if __name__ == "__main__":
