@@ -341,7 +341,7 @@ def gradient_descent_multi(X: np.array,
 
     Instructions
     ------------
-    Peform a single gradient step on the parameter vector theta.
+    Perform a single gradient step on the parameter vector theta.
 
     While debugging, it can be useful to print out the values of
     the cost function (computeCost) and gradient here.
