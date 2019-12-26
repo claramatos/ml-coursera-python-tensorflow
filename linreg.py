@@ -171,11 +171,6 @@ def compute_cost(X: np.array, y: np.array, theta: np.array):
     J = 0
 
     # ====================== YOUR CODE HERE ======================
-    X = tf.constant(X, dtype=tf.float64, name='X')
-    y = tf.constant(y, dtype=tf.float64, name='y')
-
-    theta = tf.Variable(theta, dtype=tf.float64, name='weights')
-
     h = hypothesis(X, theta)
 
     J = (1 / 2) * tf.reduce_mean(tf.square(y - h, name='loss'))
@@ -229,11 +224,6 @@ def gradient_descent(X: np.array,
     # number of training examples
     m = y.size  # number of training examples
     j_history = np.zeros(num_iters)
-
-    X = tf.constant(X, dtype=tf.float64, name='X')
-    y = tf.constant(y, dtype=tf.float64, name='y')
-
-    theta = tf.Variable(theta, dtype=tf.float64, name='weights')
 
     for iter in range(num_iters):
         # ====================== YOUR CODE HERE ======================
