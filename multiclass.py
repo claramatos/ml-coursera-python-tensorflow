@@ -315,7 +315,7 @@ def predict_one_vs_all(all_theta, X):
     X = np.concatenate([np.ones((m, 1)), X], axis=1)
 
     # ====================== YOUR CODE HERE ======================
-    z = tf.tensordot(X, all_theta.T, axes=1)
+    z = hypothesis(X, all_theta.T)
 
     prob = sigmoid(z)
 
@@ -378,11 +378,11 @@ def predict(Theta1, Theta2, X):
     a1 = X  # (m, 401)
     a1 = add_intercept(a1)
 
-    z2 = tf.tensordot(a1, Theta1.T, axes=1)
+    z2 = hypothesis(a1, Theta1.T)
     a2 = sigmoid(z2)  # (m, 25)
     a2 = add_intercept(a2)
 
-    z3 = tf.tensordot(a2, Theta2.T, axes=1)
+    z3 = hypothesis(a2, Theta2.T)
     a3 = sigmoid(z3)  # (m, 10)
 
     p = tf.argmax(a3, axis=1)
