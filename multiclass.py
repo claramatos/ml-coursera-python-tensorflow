@@ -1,9 +1,10 @@
 import numpy as np
-
+import tensorflow as tf
 from scipy import optimize
 
 from submission import Submission
 from logreg import sigmoid
+from logreg import hypothesis
 
 from utils import add_intercept
 
@@ -66,7 +67,7 @@ class MultiClassGrader(Submission):
                 yield part_id, 0
 
 
-def lr_cost_function(theta, X, y, lambda_):
+def lr_cost_function(theta, X, y, lambda_, as_tensor=False):
     """
     Computes the cost of using theta as the parameter for regularized
     logistic regression and the gradient of the cost w.r.t. to the parameters.
@@ -86,6 +87,9 @@ def lr_cost_function(theta, X, y, lambda_):
 
     lambda_ : float
         The regularization parameter.
+
+    as_tensor: bool
+        True to return the cost and gradient in tensor format.
 
     Returns
     -------
@@ -143,9 +147,36 @@ def lr_cost_function(theta, X, y, lambda_):
     grad = np.zeros(theta.shape)
 
     # ====================== YOUR CODE HERE ======================
+    if isinstance(theta, np.ndarray):
+        theta = tf.Variable(theta, shape=(theta.shape[0],))
+
+    z = hypothesis(X, theta)
+    h = sigmoid(z)
+
+    theta_reg = theta.numpy().copy()
+    theta_reg[0] = 0.0
+
+    J = tf.nn.sigmoid_cross_entropy_with_logits(logits=z, labels=y, name='loss')
+    J = tf.reduce_mean(J, name='loss')
+    J += (lambda_ / (2 * m)) * tf.reduce_sum(tf.square(theta_reg))
+
+    grad = (1 / m) * tf.tensordot(h - y, X, axes=1)
+    grad += (lambda_ / m) * theta_reg
 
     # =============================================================
-    return J, grad
+    if as_tensor:
+        return J, grad
+    else:
+        return J.numpy(), grad.numpy()
+
+
+def optimize(X, theta, y, lambda_, optimizer, options):
+    for j in range(options['maxiter']):
+        loss_val, grad_val = lr_cost_function(theta, X, y, lambda_, as_tensor=True)
+        gradients = [grad_val]
+        optimizer.apply_gradients(zip(gradients, [theta]))
+
+    return theta.numpy()
 
 
 def one_vs_all(X, y, num_labels, lambda_):
@@ -203,14 +234,8 @@ def one_vs_all(X, y, num_labels, lambda_):
         # Set options for minimize
         options = {'maxiter': 50}
 
-        # Run minimize to obtain the optimal theta. This function will
-        # return a class object where theta is in `res.x` and cost in `res.fun`
-        res = optimize.minimize(lr_cost_function,
-                                initial_theta,
-                                (X, (y == c), lambda_),
-                                jac=True,
-                                method='TNC',
-                                options=options)
+        # Run minimize to obtain the optimal theta.
+        theta = optimize(X, theta, yi, lambda_, optimizer, options)
     """
     # Some useful variables
     m, n = X.shape
@@ -222,6 +247,19 @@ def one_vs_all(X, y, num_labels, lambda_):
     X = np.concatenate([np.ones((m, 1)), X], axis=1)
 
     # ====================== YOUR CODE HERE ======================
+    for i in range(num_labels):
+        theta = np.zeros(n + 1)
+
+        options = {'maxiter': 50}
+
+        yi = np.zeros(m)
+        yi[y == i] = 1
+
+        theta = tf.Variable(theta, shape=(theta.shape[0],))
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.5)
+        theta = optimize(X, theta, yi, lambda_, optimizer, options)
+
+        all_theta[i, :] = theta
 
     # ============================================================
     return all_theta
@@ -277,9 +315,14 @@ def predict_one_vs_all(all_theta, X):
     X = np.concatenate([np.ones((m, 1)), X], axis=1)
 
     # ====================== YOUR CODE HERE ======================
+    z = tf.tensordot(X, all_theta.T, axes=1)
+
+    prob = sigmoid(z)
+
+    p = tf.argmax(prob, axis=1)
 
     # ============================================================
-    return p
+    return p.numpy()
 
 
 def predict(Theta1, Theta2, X):
@@ -332,8 +375,27 @@ def predict(Theta1, Theta2, X):
     p = np.zeros(X.shape[0])
 
     # ====================== YOUR CODE HERE ======================
+    a1 = X  # (m, 401)
+    a1 = add_intercept(a1)
+
+    z2 = tf.tensordot(a1, Theta1.T, axes=1)
+    a2 = sigmoid(z2)  # (m, 25)
+    a2 = add_intercept(a2)
+
+    z3 = tf.tensordot(a2, Theta2.T, axes=1)
+    a3 = sigmoid(z3)  # (m, 10)
+
+    p = tf.argmax(a3, axis=1)
+
+    # ============================================================
+    return p.numpy()
 
 
+if __name__ == '__main__':
+    grader = MultiClassGrader()
+    grader[1] = lr_cost_function
+    grader[2] = one_vs_all
+    grader[3] = predict_one_vs_all
+    grader[4] = predict
 
-    # =============================================================
-    return p
+    grader.grade()
