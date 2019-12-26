@@ -145,7 +145,7 @@ def lr_cost_function(theta, X, y, lambda_):
     grad = np.zeros(theta.shape)
 
     # ====================== YOUR CODE HERE ======================
-    h = sigmoid(np.dot(X, theta))
+    h = sigmoid(hypothesis(X, theta))
 
     theta_reg = theta.copy()
     theta_reg[0] = 0
@@ -305,7 +305,7 @@ def predict_one_vs_all(all_theta, X):
     X = np.concatenate([np.ones((m, 1)), X], axis=1)
 
     # ====================== YOUR CODE HERE ======================
-    z = np.dot(X, all_theta.T)
+    z = hypothesis(X, all_theta.T)
 
     prob = sigmoid(z)
 
@@ -368,15 +368,25 @@ def predict(Theta1, Theta2, X):
     a1 = X  # (m, 401)
     a1 = add_intercept(a1)
 
-    z2 = np.dot(a1, Theta1.T)
+    z2 = hypothesis(a1, Theta1.T)
     a2 = sigmoid(z2)  # (m, 25)
 
     a2 = add_intercept(a2)
 
-    z3 = np.dot(a2, Theta2.T)
+    z3 = hypothesis(a2, Theta2.T)
     a3 = sigmoid(z3)  # (m, 10)
 
     p = np.argmax(a3, axis=1)
 
     # =============================================================
     return p
+
+
+if __name__ == '__main__':
+    grader = MultiClassGrader()
+    grader[1] = lr_cost_function
+    grader[2] = one_vs_all
+    grader[3] = predict_one_vs_all
+    grader[4] = predict
+
+    grader.grade()
