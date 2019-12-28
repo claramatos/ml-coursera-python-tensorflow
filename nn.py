@@ -407,8 +407,11 @@ def cost(theta):
 
 
 if __name__ == '__main__':
-    e = 0.01
-    j1 = cost(1 + e)
-    j2 = cost(1 - e)
+    grader = NNGrader()
+    grader[1] = nn_cost_function
+    grader[2] = nn_cost_function
+    grader[3] = sigmoid_gradient
+    grader[4] = nn_cost_function
+    grader[5] = nn_cost_function
 
-    print((j1 - j2) / (2 * e))
+    grader.grade()
