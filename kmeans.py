@@ -423,7 +423,7 @@ def recover_data(Z, U, K):
     onto the original space using the top K eigenvectors in U.
     For the i-th example Z[i,:], the (approximate)
     recovered data for dimension j is given as follows:
-s
+
         v = Z[i, :]
         recovered_j = np.dot(v, U[j, :K])
 
