@@ -80,19 +80,6 @@ def plot_data(X, y, xlabel='', ylabel='', legend=None):
     plt.figure()
 
     # ====================== YOUR CODE HERE ======================
-    # Find Indices of Positive and Negative Examples
-    pos = y == 1
-    neg = y == 0
-
-    # Plot Examples
-    plt.plot(X[pos, 0], X[pos, 1], 'k*', lw=2, ms=10)
-    plt.plot(X[neg, 0], X[neg, 1], 'ko', mfc='y', ms=8, mec='k', mew=1)
-
-    plt.xlabel(xlabel)
-    plt.ylabel(ylabel)
-
-    if legend is not None:
-        plt.legend(legend)
 
     # ============================================================
 
@@ -124,7 +111,7 @@ def sigmoid(z):
     g = np.zeros(z.shape)
 
     # ====================== YOUR CODE HERE ======================
-    g = 1 / (1 + np.exp(-z))
+
     # =============================================================
     return g
 
@@ -185,15 +172,8 @@ def cost_function(theta, X, y):
     grad = np.zeros(theta.shape)
 
     # ====================== YOUR CODE HERE ======================
-    z = hypothesis(X, theta)
 
-    h = sigmoid(z)
-
-    J = (1 / m) * (-np.dot(y, np.log(h)) - np.dot((1 - y), np.log(1 - h)))
-
-    grad = (1 / m) * np.dot(h - y, X)
-
-    # =============================================================
+    # ============================================================
     return J, grad
 
 
@@ -229,12 +209,6 @@ def predict(theta, X):
     p = np.zeros(m)
 
     # ====================== YOUR CODE HERE ======================
-
-    z = hypothesis(X, theta)
-
-    prob = sigmoid(z)
-
-    p[prob > 0.5] = 1
 
     # ============================================================
     return p
@@ -285,15 +259,6 @@ def cost_function_reg(theta, X, y, lambda_):
     grad = np.zeros(theta.shape)
 
     # ===================== YOUR CODE HERE ======================
-
-    J, grad = cost_function(theta, X, y)
-
-    theta_reg = theta.copy()
-    theta_reg[0] = 0
-
-    J += (lambda_ / (2 * m)) * np.sum(np.square(theta_reg))
-
-    grad += np.dot(lambda_ / m, theta_reg)
 
     # =============================================================
     return J, grad

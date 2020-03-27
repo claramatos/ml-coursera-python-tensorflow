@@ -83,8 +83,8 @@ def sigmoid_gradient(z):
     g = np.zeros(z.shape)
 
     # ====================== YOUR CODE HERE ======================
-    g = sigmoid(z) * (1 - sigmoid(z))
-    # =============================================================
+
+    # ============================================================
     return g
 
 
@@ -184,33 +184,6 @@ def nn_cost_function(nn_params,
 
     # ====================== YOUR CODE HERE ======================
 
-    y_matrix = y.reshape(-1)
-    y_matrix = np.eye(num_labels)[y_matrix]
-
-    a1, a2, a3 = forward_propagation(theta1, theta2, X)
-    J = (1 / m) * np.sum(-(y_matrix * np.log(a3)) - ((1 - y_matrix) * np.log(1 - a3)))
-
-    theta1_reg = theta1.copy()  # (25, 401)
-    theta1_reg[:, 0] = np.zeros(theta1_reg.shape[0])
-
-    theta2_reg = theta2.copy()  # (10, 26)
-    theta2_reg[:, 0] = np.zeros(theta2_reg.shape[0])
-
-    J += (lambda_ / (2 * m)) * (np.sum(np.square(theta1_reg)) + np.sum(np.square(theta2_reg)))
-
-    # backpropagation
-    delta_3 = a3 - y_matrix
-    z2 = np.dot(a1, theta1.T)
-    delta_2 = np.dot(delta_3, theta2)[:, 1:] * sigmoid_gradient(z2)
-
-    Delta_1 = np.dot(delta_2.T, a1)
-    Delta_2 = np.dot(delta_3.T, a2)
-
-    theta1_grad = (1 / m) * Delta_1
-    theta1_grad[:, 1:] += (lambda_ / m) * theta1[:, 1:]
-    theta2_grad = (1 / m) * Delta_2
-    theta2_grad[:, 1:] += (lambda_ / m) * theta2[:, 1:]
-
     # ================================================================
     # Unroll gradients
     grad = np.concatenate([theta1_grad.ravel(), theta2_grad.ravel()])
@@ -253,8 +226,6 @@ def rand_initialize_weights(L_in, L_out, epsilon_init=0.12):
 
     # ====================== YOUR CODE HERE ======================
 
-    W = np.random.rand(L_out, 1 + L_in) * 2 * epsilon_init - epsilon_init
-
     # ============================================================
     return W
 
@@ -292,34 +263,6 @@ def compute_numerical_gradient(J, theta, e=1e-4):
         loss2, _ = J(theta + perturb[:, i])
         num_grad[i] = (loss2 - loss1) / (2 * e)
     return num_grad
-
-
-def forward_propagation(Theta1, Theta2, X):
-    a1 = X  # (m, 401)
-    a1 = add_intercept(a1)
-
-    z2 = np.dot(a1, Theta1.T)
-    a2 = sigmoid(z2)  # (m, 25)
-
-    a2 = add_intercept(a2)
-
-    z3 = np.dot(a2, Theta2.T)
-    a3 = sigmoid(z3)  # (m, 10)
-
-    return a1, a2, a3
-
-
-def predict(Theta1, Theta2, X):
-    """
-    Predict the label of an input given a trained neural network
-    Outputs the predicted label of X given the trained weights of a neural
-    network(Theta1, Theta2)
-    """
-
-    a1, a2, a3 = forward_propagation(Theta1, Theta2, X)
-    p = np.argmax(a3, axis=1)
-
-    return p
 
 
 def debug_initialize_weights(fan_out, fan_in):

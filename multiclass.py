@@ -145,18 +145,8 @@ def lr_cost_function(theta, X, y, lambda_):
     grad = np.zeros(theta.shape)
 
     # ====================== YOUR CODE HERE ======================
-    h = sigmoid(hypothesis(X, theta))
 
-    theta_reg = theta.copy()
-    theta_reg[0] = 0
-
-    J = (1 / m) * (np.dot(-y, np.log(h)) - np.dot(1 - y, np.log(1 - h)))
-    J += (lambda_ / (2 * m)) * np.sum(np.square(theta_reg))
-
-    grad = (1 / m) * np.dot(h - y, X)
-    grad += np.dot(lambda_ / m, theta_reg)
-
-    # =============================================================
+    # ============================================================
     return J, grad
 
 
@@ -235,22 +225,6 @@ def one_vs_all(X, y, num_labels, lambda_):
 
     # ====================== YOUR CODE HERE ======================
 
-    for i in range(num_labels):
-        initial_theta = np.zeros(n + 1)
-
-        options = {'maxiter': 50}
-
-        yi = np.zeros(m)
-        yi[y == i] = 1
-
-        res = optimize.minimize(lr_cost_function,
-                                initial_theta,
-                                (X, yi, lambda_),
-                                jac=True,
-                                method='TNC',
-                                options=options)
-
-        all_theta[i, :] = res.x
     # ============================================================
     return all_theta
 
@@ -305,11 +279,7 @@ def predict_one_vs_all(all_theta, X):
     X = np.concatenate([np.ones((m, 1)), X], axis=1)
 
     # ====================== YOUR CODE HERE ======================
-    z = hypothesis(X, all_theta.T)
 
-    prob = sigmoid(z)
-
-    p = np.argmax(prob, axis=1)
     # ============================================================
     return p
 
@@ -364,19 +334,6 @@ def predict(Theta1, Theta2, X):
     p = np.zeros(X.shape[0])
 
     # ====================== YOUR CODE HERE ======================
-
-    a1 = X  # (m, 401)
-    a1 = add_intercept(a1)
-
-    z2 = hypothesis(a1, Theta1.T)
-    a2 = sigmoid(z2)  # (m, 25)
-
-    a2 = add_intercept(a2)
-
-    z3 = hypothesis(a2, Theta2.T)
-    a3 = sigmoid(z3)  # (m, 10)
-
-    p = np.argmax(a3, axis=1)
 
     # =============================================================
     return p

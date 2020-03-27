@@ -206,9 +206,7 @@ def find_closest_centroids(X, centroids):
     idx = np.zeros(X.shape[0], dtype=int)
 
     # ====================== YOUR CODE HERE ======================
-    for i in range(X.shape[0]):
-        J = np.sum(np.square(X[i] - centroids), axis=1)
-        idx[i] = np.argmin(J)
+
     # =============================================================
     return idx
 
@@ -255,8 +253,7 @@ def compute_centroids(X, idx, K):
     centroids = np.zeros((K, n))
 
     # ====================== YOUR CODE HERE ======================
-    for i in range(K):
-        centroids[i] = np.mean(X[idx == i], axis=0)
+
     # =============================================================
     return centroids
 
@@ -288,10 +285,7 @@ def kmeans_init_centroids(X, K):
     centroids = np.zeros((K, n))
 
     # ====================== YOUR CODE HERE ======================
-    # Randomly reorder the indices of examples
-    randidx = np.random.permutation(X.shape[0])
-    # Take the first K examples as centroids
-    centroids = X[randidx[:K], :]
+
     # =============================================================
     return centroids
 
@@ -338,8 +332,7 @@ def pca(X):
     S = np.zeros(n)
 
     # ====================== YOUR CODE HERE ======================
-    sigma = (1 / m) * np.dot(X.T, X)
-    U, S, _ = np.linalg.svd(sigma)
+
     # ============================================================
     return U, S
 
@@ -384,7 +377,7 @@ def project_data(X, U, K):
     Z = np.zeros((X.shape[0], K))
 
     # ====================== YOUR CODE HERE ======================
-    Z = np.dot(X, U[:, :K])
+
     # =============================================================
     return Z
 
@@ -433,6 +426,6 @@ def recover_data(Z, U, K):
     X_rec = np.zeros((Z.shape[0], U.shape[0]))
 
     # ====================== YOUR CODE HERE ======================
-    X_rec = np.dot(Z, U[:, :K].T)
+
     # =============================================================
     return X_rec

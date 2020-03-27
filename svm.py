@@ -79,8 +79,8 @@ def gaussian_kernel(x1, x2, sigma):
     """
     sim = 0
     # ====================== YOUR CODE HERE ======================
-    sim = np.exp(-np.sum(np.square(x1 - x2)) / (2 * sigma * sigma))
-    # =============================================================
+
+    # ============================================================
     return sim
 
 
@@ -154,20 +154,7 @@ def dataset3_params(X, y, Xval, yval):
     sigma = 0.3
 
     # ====================== YOUR CODE HERE ======================
-    search = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]
 
-    min_error = np.inf
-
-    for ci in search:
-        for sigmai in search:
-            model = svm_train(X, y, ci, gaussian_kernel, args=(sigmai,))
-            ypred = svm_predict(model, Xval)
-            error = np.mean(ypred != yval)
-
-            if error < min_error:
-                min_error = error
-                C = ci
-                sigma = sigmai
     # ============================================================
     return C, sigma
 
@@ -268,8 +255,7 @@ def process_email(email_contents, vocab_list_filename, verbose=True):
         # Look up the word in the dictionary and add to word_indices if found
 
         # ====================== YOUR CODE HERE ======================
-        if word in vocab_list:
-            word_indices.append(vocab_list.index(word))
+
         # =============================================================
 
     if verbose:
@@ -336,8 +322,6 @@ def email_features(word_indices):
     x = np.zeros(n)
 
     # ===================== YOUR CODE HERE ======================
-
-    x[word_indices] = 1
 
     # ===========================================================
 

@@ -303,8 +303,7 @@ def estimate_gaussian(X):
     sigma2 = np.zeros(n)
 
     # ====================== YOUR CODE HERE ======================
-    mu = (1 / m) * np.sum(X, axis=0)
-    sigma2 = (1 / m) * np.sum(np.square(X - mu), axis=0)
+
     # =============================================================
     return mu, sigma2
 
@@ -348,16 +347,6 @@ def select_threshold(yval, pval):
 
     for epsilon in np.linspace(1.01 * min(pval), max(pval), 1000):
         # ====================== YOUR CODE HERE =======================
-        ypred = np.zeros(yval.shape[0])
-        ypred[pval < epsilon] = 1
-
-        tp = np.sum((ypred == 1) & (yval == 1))
-        fp = np.sum((ypred == 1) & (yval == 0))
-        fn = np.sum((ypred == 0) & (yval == 1))
-
-        prec = tp / (tp + fp)
-        rec = tp / (tp + fn)
-        f1 = (2 * prec * rec) / (prec + rec)
 
         # =============================================================
         if f1 > best_f1:
@@ -444,23 +433,6 @@ def cofi_cost_func(params, Y, R, num_users, num_movies,
     nm, nu = R.shape
 
     # ====================== YOUR CODE HERE ======================
-    J = 0.5 * np.sum(np.square(np.dot(X, Theta.T) - Y) * R)
-    J += (lambda_ / 2) * np.sum((np.square(Theta)))
-    J += (lambda_ / 2) * np.sum((np.square(X)))
-
-    for i in range(nm):
-        idx = np.where(R[i, :] == 1)[0]
-        Theta_temp = Theta[idx, :]
-        Y_temp = Y[i, idx]
-        X_grad[i, :] = np.dot(np.dot(X[i, :], Theta_temp.T) - Y_temp, Theta_temp)
-        X_grad[i, :] += lambda_ * X[i, :]
-
-    for j in range(nu):
-        idx = np.where(R[:, j] == 1)[0]
-        X_temp = X[idx, :]
-        Y_temp = Y[idx, j]
-        Theta_grad[j, :] = np.dot(np.dot(X_temp, Theta[j, :]) - Y_temp, X_temp)
-        Theta_grad[j, :] += lambda_ * Theta[j, :]
 
     # =============================================================
     grad = np.concatenate([X_grad.ravel(), Theta_grad.ravel()])

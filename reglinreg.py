@@ -95,16 +95,6 @@ def linear_reg_cost_function(X, y, theta, lambda_=0.0):
     grad = np.zeros(theta.shape)
 
     # ====================== YOUR CODE HERE ======================
-    h = np.dot(X, theta)
-
-    theta_reg = theta.copy()
-    theta_reg[0] = 0
-
-    J = (1 / (2 * m)) * np.sum(np.square(h - y))
-    J += (lambda_ / (2 * m)) * np.sum(np.square(theta_reg))
-
-    grad = (1 / m) * np.dot(h - y, X)
-    grad += np.dot(lambda_ / m, theta_reg)
 
     # ============================================================
     return J, grad
@@ -188,14 +178,8 @@ def learning_curve(X, y, Xval, yval, lambda_=0):
     error_val = np.zeros(m)
 
     # ====================== YOUR CODE HERE ======================
-    for i in range(1, m + 1):
-        theta = train_linear_reg(linear_reg_cost_function, X[:i, :], y[:i], lambda_=lambda_)
-        train_cost, _ = linear_reg_cost_function(X[:i, :], y[:i], theta)
-        error_train[i - 1] = train_cost
-        validation_cost, _ = linear_reg_cost_function(Xval, yval, theta)
-        error_val[i - 1] = validation_cost
 
-    # =============================================================
+    # ============================================================
     return error_train, error_val
 
 
@@ -209,13 +193,6 @@ def learning_curve_cv(X, y, Xval, yval, n, lambda_=0):
     error_val = np.zeros((m, n))
 
     # ====================== YOUR CODE HERE ======================
-    for i in range(1, m + 1):
-        for j in range(n):
-            train_index = np.random.choice(m, i, replace=False)
-            theta = train_linear_reg(linear_reg_cost_function, X[train_index, :], y[train_index], lambda_=lambda_)
-            error_train[i - 1, j], _ = linear_reg_cost_function(X[train_index, :], y[train_index], theta)
-            val_index = np.random.choice(mval, i, replace=False)
-            error_val[i - 1, j], _ = linear_reg_cost_function(Xval[val_index, :], yval[val_index], theta)
 
     # =============================================================
     return error_train.mean(axis=1), error_val.mean(axis=1)
@@ -250,8 +227,6 @@ def poly_features(X, p):
     X_poly = np.zeros((X.shape[0], p))
 
     # ====================== YOUR CODE HERE ======================
-    pv = np.arange(1, p + 1)
-    X_poly = np.power(X, pv)
 
     # ============================================================
     return X_poly
@@ -324,13 +299,6 @@ def validation_curve(X, y, Xval, yval):
     error_val = np.zeros(len(lambda_vec))
 
     # ====================== YOUR CODE HERE ======================
-    for i in range(len(lambda_vec)):
-        lambda_ = lambda_vec[i]
-        theta = train_linear_reg(linear_reg_cost_function, X, y, lambda_=lambda_)
-        train_cost, _ = linear_reg_cost_function(X, y, theta, lambda_=0)
-        error_train[i] = train_cost
-        validation_cost, _ = linear_reg_cost_function(Xval, yval, theta, lambda_=0)
-        error_val[i] = validation_cost
 
     # ============================================================
     return lambda_vec, error_train, error_val

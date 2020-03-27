@@ -159,10 +159,10 @@ def compute_cost(X: np.array, y: np.array, theta: np.array):
 
     # number of training examples
     m = y.shape[0]
+    J = np.zeros(m)
 
     # ====================== YOUR CODE HERE ======================
-    h = hypothesis(X, theta)
-    J = (1 / (2 * m)) * np.sum(np.square(h - y))
+
     # ==============================================================
 
     return J
@@ -217,8 +217,7 @@ def gradient_descent(X: np.array,
 
     for iter in range(num_iters):
         # ====================== YOUR CODE HERE ======================
-        h = hypothesis(X, theta)
-        theta -= (alpha / m) * np.dot(h - y, X)
+
         # ============================================================
 
         # Save the cost J in every iteration
