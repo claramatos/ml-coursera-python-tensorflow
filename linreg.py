@@ -66,11 +66,7 @@ def warm_up():
     ------------
     Return the 5x5 identity matrix.
     """
-    # ======== YOUR CODE HERE ======
-    A = []  # modify this line
-
-    # ==============================
-    return A
+    return np.eye(5)
 
 
 def plot_data(X: np.array,
@@ -103,7 +99,7 @@ def plot_data(X: np.array,
     using plot(..., 'ro', ms=10), where `ms` refers to marker size. You
     can also set the marker edge color using the `mec` property.
     """
-    fig = plt.figure()  # open a new figure
+    plt.figure()  # open a new figure
 
     # ====================== YOUR CODE HERE =======================
 
@@ -164,11 +160,9 @@ def compute_cost(X: np.array, y: np.array, theta: np.array):
     # number of training examples
     m = y.shape[0]
 
-    # You need to return the following variable correctly
-    J = 0
-
     # ====================== YOUR CODE HERE ======================
-
+    h = hypothesis(X, theta)
+    J = (1 / (2 * m)) * np.sum(np.square(h - y))
     # ==============================================================
 
     return J
@@ -223,7 +217,8 @@ def gradient_descent(X: np.array,
 
     for iter in range(num_iters):
         # ====================== YOUR CODE HERE ======================
-
+        h = hypothesis(X, theta)
+        theta -= (alpha / m) * np.dot(h - y, X)
         # ============================================================
 
         # Save the cost J in every iteration
@@ -351,7 +346,7 @@ def gradient_descent_multi(X: np.array,
 
     Instructions
     ------------
-    Peform a single gradient step on the parameter vector theta.
+    Perform a single gradient step on the parameter vector theta.
 
     While debugging, it can be useful to print out the values of
     the cost function (computeCost) and gradient here.
@@ -398,9 +393,7 @@ def normal_eqn(X: np.array, y: np.array):
     ----
     Look up the function `np.linalg.pinv` for computing matrix inverse.
     """
-
     theta = np.zeros(X.shape[1])
-
     # ====================== YOUR CODE HERE ======================
 
     # ============================================================
