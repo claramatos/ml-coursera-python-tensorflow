@@ -104,10 +104,10 @@ def linear_reg_cost_function(X, y, theta, lambda_=0.0, as_tensor=False):
     theta_reg = theta.numpy().copy()
     theta_reg[0] = 0.0
 
-    J = (1 / 2) * tf.reduce_mean(tf.square(y - h, name='loss'))
-    J += (lambda_ / (2 * m)) * tf.reduce_sum(tf.square(theta_reg))
+    J = (1 / 2.0) * tf.reduce_mean(tf.square(y - h, name='loss'))
+    J += (lambda_ / (2.0 * m)) * tf.reduce_sum(tf.square(theta_reg))
 
-    grad = (1 / m) * tf.tensordot(h - y, X, axes=1)
+    grad = (1.0 / m) * tf.tensordot(h - y, X, axes=1)
     grad += (lambda_ / m) * theta_reg
 
     # ============================================================
