@@ -620,7 +620,11 @@ def svm_predict(model, X):
                                * model['kernel_function'](X[i, :], model['X'][j, :])
             p[i] = predictions
 
-    pred[p >= 0] = 1
+    if isinstance(p, tf.Tensor):
+        pred[(p >= 0).numpy()] = 1
+    else:
+        pred[p >= 0] = 1
+
 
     return pred
 
